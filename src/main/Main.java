@@ -1,7 +1,6 @@
 package main;
 
 import dao.*;
-import java.io.File;
 import java.util.List;
 import java.util.Scanner;
 import model.*;
@@ -11,11 +10,7 @@ public class Main {
     private static final UserDao userDao = new UserDao();
     private static final JobDao jobDao = new JobDao();
     private static final ApplicationDao appDao = new ApplicationDao();
-    private static final ResumeDao resumeDao = new ResumeDao();
 
-    /**
-     * @param args
-     */
     public static void main(String[] args) {
         User loggedInUser = null;
 
@@ -42,7 +37,7 @@ public class Main {
                 }
                 case 3 -> {
                     if (checkLoggedIn(loggedInUser)) {
-                        if ("EMPLOYER".equals(loggedInUser.getRole())) {
+                        if ("EMPLOYER".equals(User.getRole(loggedInUser))) {
                             postJob(loggedInUser);
                         } else {
                             System.out.println("Only EMPLOYERS can post jobs.");
@@ -52,7 +47,7 @@ public class Main {
                 case 4 -> viewAllJobs();
                 case 5 -> {
                     if (checkLoggedIn(loggedInUser)) {
-                        if ("JOB_SEEKER".equals(loggedInUser.getRole())) {
+                        if ("JOB_SEEKER".equals(User.getRole(loggedInUser))) {
                             applyToJob(loggedInUser);
                         } else {
                             System.out.println("Only JOB_SEEKERS can apply to jobs.");
@@ -113,7 +108,7 @@ public class Main {
         if (user == null) {
             System.out.println("Invalid login credentials.");
         } else {
-            System.out.println("Welcome " + user.getName() + " [" + user.getRole() + "]");
+            System.out.println("Welcome " + user.getName() + " [" + User.getRole(user) + "]");
         }
         return user;
     }
@@ -165,26 +160,13 @@ public class Main {
         System.out.println(applied ? "Application submitted." : "Application failed.");
     }
 
-    private static void uploadResume(User user) {
-        System.out.print("Enter full path to your resume (PDF): ");
-        String path = scanner.nextLine();
-        File file = new File(path);
-
-        if (!file.exists()) {
-            System.out.println("File not found.");
-        } else {
-            boolean uploaded = resumeDao.uploadResume(file, "application/pdf", user.getUserId());
-            System.out.println(uploaded ? "Resume uploaded successfully." : "Upload failed.");
-        }
-    }
-
     private static int readInt() {
         while (!scanner.hasNextInt()) {
             System.out.print("Invalid input. Please enter a number: ");
             scanner.next();
         }
         int val = scanner.nextInt();
-        scanner.nextLine(); // consume newline
+        scanner.nextLine(); 
         return val;
     }
 }

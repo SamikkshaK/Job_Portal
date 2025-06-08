@@ -17,7 +17,7 @@ public class UserDao {
             ps.setString(1, user.getName());
             ps.setString(2, user.getEmail());
             ps.setString(3, user.getPassword());
-            ps.setString(4, user.getRole());
+            ps.setString(4, User.getRole(user));
 
             return ps.executeUpdate() > 0;
 

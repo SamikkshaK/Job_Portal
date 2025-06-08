@@ -17,7 +17,7 @@ public class ResumeDao {
 
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setInt(1, userId);
-            ps.setString(2, filename);     // Only store filename, no FileInputStream
+            ps.setString(2, filename);     
             ps.setString(3, mimeType);
 
             int rows = ps.executeUpdate();

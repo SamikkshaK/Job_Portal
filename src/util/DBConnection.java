@@ -16,7 +16,7 @@ public class DBConnection {
             try {
                 Properties props = new Properties();
 
-                try ( // Load db.properties from project root directory
+                try ( 
                         FileInputStream fis = new FileInputStream("db.properties")) {
                     props.load(fis);
                 }
