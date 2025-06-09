@@ -74,14 +74,13 @@ public class Main {
         }
         return user;
     }
-
     private static int readInt() {
         while (!scanner.hasNextInt()) {
             System.out.print("Invalid input. Please enter a number: ");
             scanner.next();
         }
         int val = scanner.nextInt();
-        scanner.nextLine(); 
+        scanner.nextLine();
         return val;
     }
 }
