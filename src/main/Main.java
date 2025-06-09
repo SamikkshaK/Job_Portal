@@ -1,27 +1,21 @@
 package main;
 
-import dao.*;
-import java.util.List;
+import dao.UserDao;
 import java.util.Scanner;
-import model.*;
+import model.User;
 
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final UserDao userDao = new UserDao();
-    private static final JobDao jobDao = new JobDao();
-    private static final ApplicationDao appDao = new ApplicationDao();
 
     public static void main(String[] args) {
         User loggedInUser = null;
 
         while (true) {
-            System.out.println("\n=== Main Menu ===");
+            System.out.println("\n=== User Menu ===");
             System.out.println("1. Register");
             System.out.println("2. Login");
-            System.out.println("3. Post Job");
-            System.out.println("4. View All Jobs");
-            System.out.println("5. Apply Job");
-            System.out.println("6. Logout");
+            System.out.println("3. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = readInt();
@@ -36,44 +30,12 @@ public class Main {
                     }
                 }
                 case 3 -> {
-                    if (checkLoggedIn(loggedInUser)) {
-                        if ("EMPLOYER".equals(User.getRole(loggedInUser))) {
-                            postJob(loggedInUser);
-                        } else {
-                            System.out.println("Only EMPLOYERS can post jobs.");
-                        }
-                    }
-                }
-                case 4 -> viewAllJobs();
-                case 5 -> {
-                    if (checkLoggedIn(loggedInUser)) {
-                        if ("JOB_SEEKER".equals(User.getRole(loggedInUser))) {
-                            applyToJob(loggedInUser);
-                        } else {
-                            System.out.println("Only JOB_SEEKERS can apply to jobs.");
-                        }
-                    }
-                }
-  
-                case 6 -> {
-                    if (loggedInUser != null) {
-                        System.out.println("Logged out " + loggedInUser.getName() + ".");
-                        loggedInUser = null;
-                    } else {
-                        System.out.println("You are not logged in.");
-                    }
+                    System.out.println("Exiting program. Goodbye!");
+                    System.exit(0);
                 }
                 default -> System.out.println("Invalid choice. Try again.");
             }
         }
-    }
-
-    private static boolean checkLoggedIn(User user) {
-        if (user == null) {
-            System.out.println("Please login first.");
-            return false;
-        }
-        return true;
     }
 
     private static void registerUser() {
@@ -111,53 +73,6 @@ public class Main {
             System.out.println("Welcome " + user.getName() + " [" + User.getRole(user) + "]");
         }
         return user;
-    }
-
-    private static void postJob(User user) {
-        System.out.print("Job Title: ");
-        String title = scanner.nextLine();
-        System.out.print("Description: ");
-        String desc = scanner.nextLine();
-        System.out.print("Qualifications: ");
-        String qual = scanner.nextLine();
-        System.out.print("Location: ");
-        String loc = scanner.nextLine();
-
-        Job job = new Job(user.getUserId(), title, desc, qual, loc);
-        boolean posted = jobDao.postJob(job);
-        System.out.println(posted ? "Job posted successfully." : "Failed to post job.");
-    }
-
-    private static void viewAllJobs() {
-        List<Job> jobs = jobDao.getAllJobs();
-        if (jobs.isEmpty()) {
-            System.out.println("No jobs found.");
-        } else {
-            System.out.println("Jobs List:");
-            for (Job j : jobs) {
-                System.out.println(j.getJobId() + ". " + j.getTitle() + " | " + j.getLocation() +
-                        "\n   Qualifications: " + j.getQualifications());
-            }
-        }
-    }
-
-    private static void applyToJob(User user) {
-        List<Job> jobs = jobDao.getAllJobs();
-        if (jobs.isEmpty()) {
-            System.out.println("No jobs to apply for currently.");
-            return;
-        }
-
-        System.out.println("Jobs to apply:");
-        for (Job j : jobs) {
-            System.out.println(j.getJobId() + ". " + j.getTitle() + " | " + j.getLocation());
-        }
-        System.out.print("Enter Job ID to apply: ");
-        int jobId = readInt();
-
-        Application app = new Application(jobId, user.getUserId());
-        boolean applied = appDao.applyToJob(app);
-        System.out.println(applied ? "Application submitted." : "Application failed.");
     }
 
     private static int readInt() {
